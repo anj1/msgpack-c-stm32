@@ -77,10 +77,43 @@ How to build:
 
     $ git clone https://github.com/msgpack/msgpack-c.git
     $ cd msgpack-c
-    $ git checkout c_master
-    $ cmake .
-    $ make
-    $ sudo make install
+    $ git checkout c_master_stm32
+
+then:
+    $ cmake -S . -B build-stm32 \
+       -DCMAKE_TOOLCHAIN_FILE=cmake/arm-gcc-stm32f7.cmake \
+       -DCMAKE_BUILD_TYPE=Release \
+       -DBUILD_SHARED_LIBS=OFF \
+       -DMSGPACK_ENABLE_STATIC=ON \
+       -DMSGPACK_ENABLE_SHARED=OFF \
+       -DMSGPACK_BUILD_TESTS=OFF \
+       -DMSGPACK_BUILD_EXAMPLES=OFF
+
+    $ cmake --build build-stm32 -j
+
+Using in your stm32 project:
+Don't forget to include:
+```
+-I<path>/msgpack-c/include
+-I<path>/msgpack-c/build-stm32/include
+```
+
+And also add libs:
+```
+-L<path>/msgpack-c/build-stm32
+-lmsgpack-c
+```
+
+And ensure you're using the same flags (change if needed):
+```
+-mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
+```
+
+If you use newlib-nano, typical link adds:
+```
+-specs=nano.specs -lc -lnosys
+```
+You must provide malloc/free (newlib _sbrk or your RTOS heap), since msgpack uses dynamic allocation (e.g., msgpack_zone, sbuffer).
 
 How to run tests:
 

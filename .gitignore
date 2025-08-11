@@ -49,3 +49,5 @@ Makefile
 /test/streaming_c
 /test/version
 /test/zone
+
+/build-stm32
