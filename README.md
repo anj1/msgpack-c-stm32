@@ -14,11 +14,7 @@ addition to the strings themselves.
 
 ### C Library
 
-See [c_master](https://github.com/msgpack/msgpack-c/tree/c_master)
-
-### C++ Library
-
-See [cpp_master](https://github.com/msgpack/msgpack-c/tree/cpp_master)
+See [c_master_stm32](https://github.com/anj1/msgpack-c-stm32/tree/c_master_stm32)
 
 ### Documentation
 
