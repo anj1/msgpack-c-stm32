@@ -225,4 +225,73 @@
 #  include <TargetConditionals.h>
 #endif
 
+#ifdef NO_UNALIGNED_STORES
+
+#    undef _msgpack_store16
+#    undef _msgpack_store32
+#    undef _msgpack_store64
+
+#    define _msgpack_store16(to, num) do {                 \
+        uint16_t _v = (uint16_t)(num);                      \
+        uint8_t *_d = (uint8_t*)(to);                       \
+        _d[0] = (uint8_t)(_v >> 8);                         \
+        _d[1] = (uint8_t)(_v);                              \
+    } while (0)
+
+#   define _msgpack_store32(to, num) do {                 \
+        uint32_t _v = (uint32_t)(num);                      \
+        uint8_t *_d = (uint8_t*)(to);                       \
+        _d[0] = (uint8_t)(_v >> 24);                        \
+        _d[1] = (uint8_t)(_v >> 16);                        \
+        _d[2] = (uint8_t)(_v >> 8);                         \
+        _d[3] = (uint8_t)(_v);                              \
+    } while (0)
+
+#    define _msgpack_store64(to, num) do {                 \
+        uint64_t _v = (uint64_t)(num);                      \
+        uint8_t *_d = (uint8_t*)(to);                       \
+        _d[0] = (uint8_t)(_v >> 56);                        \
+        _d[1] = (uint8_t)(_v >> 48);                        \
+        _d[2] = (uint8_t)(_v >> 40);                        \
+        _d[3] = (uint8_t)(_v >> 32);                        \
+        _d[4] = (uint8_t)(_v >> 24);                        \
+        _d[5] = (uint8_t)(_v >> 16);                        \
+        _d[6] = (uint8_t)(_v >> 8);                         \
+        _d[7] = (uint8_t)(_v);                              \
+    } while (0)
+
+#    undef _msgpack_load16
+#    undef _msgpack_load32
+#    undef _msgpack_load64
+
+#    define _msgpack_load16(cast, from, to) do {           \
+        const uint8_t *_s = (const uint8_t*)(from);         \
+        uint16_t _v = ((uint16_t)_s[0] << 8) | _s[1];       \
+        *(to) = (cast)_v;                                   \
+    } while (0)
+
+#    define _msgpack_load32(cast, from, to) do {               \
+        const uint8_t *_s = (const uint8_t*)(from);             \
+        uint32_t _v = ((uint32_t)_s[0] << 24) |                 \
+                    ((uint32_t)_s[1] << 16) |                 \
+                    ((uint32_t)_s[2] << 8)  |                 \
+                    ((uint32_t)_s[3]);                        \
+        *(to) = (cast)_v;                                       \
+    } while (0)
+
+#    define _msgpack_load64(cast, from, to) do {                  \
+        const uint8_t *_s = (const uint8_t*)(from);                \
+        uint64_t _v = ((uint64_t)_s[0] << 56) |                    \
+                    ((uint64_t)_s[1] << 48) |                    \
+                    ((uint64_t)_s[2] << 40) |                    \
+                    ((uint64_t)_s[3] << 32) |                    \
+                    ((uint64_t)_s[4] << 24) |                    \
+                    ((uint64_t)_s[5] << 16) |                    \
+                    ((uint64_t)_s[6] << 8)  |                    \
+                    ((uint64_t)_s[7]);                           \
+        *(to) = (cast)_v;                                          \
+    } while (0)
+
+#endif /* NO_UNALIGNED_STORES */
+
 #endif /* msgpack/sysdep.h */

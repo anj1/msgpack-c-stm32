@@ -91,6 +91,8 @@ then:
 
     $ cmake --build build-stm32 -j
 
+Optionally, to disable unaligned stores (useful for some architectures like stm32f7), use the `-DMSGPACK_NO_UNALIGNED_STORES` option. 
+
 Using in your stm32 project:
 Don't forget to include:
 ```
